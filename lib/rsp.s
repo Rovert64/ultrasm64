@@ -55,6 +55,11 @@ glabel aspMainTextStart
 #endif
 glabel aspMainTextEnd
 
+.balign 16
+glabel n_aspMainTextStart
+    .incbin "lib/PR/audio/n_aspMain.bin"
+glabel n_aspMainTextEnd
+
 /*
  * LESS COMMON MICROCODES
  * These are setup to be loaded by G_LOAD_UCODE
@@ -201,6 +206,11 @@ glabel aspMainDataStart
     .incbin "lib/PR/audio/aspMain_data.bin"
 #endif
 glabel aspMainDataEnd
+
+.balign 16
+glabel n_aspMainDataStart
+    .incbin "lib/PR/audio/n_aspMain_data.bin"
+glabel n_aspMainDataEnd
 
 /* LESS COMMON MICROCODES */
 

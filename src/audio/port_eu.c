@@ -1,4 +1,5 @@
 #include <ultra64.h>
+#include <PR/n_libaudio.h>
 #include "internal.h"
 #include "load.h"
 #include "data.h"
@@ -119,11 +120,18 @@ struct SPTask *create_next_audio_frame_task(void) {
     task->type = M_AUDTASK;
     task->flags = flags;
     task->ucode_boot = rspbootTextStart;
-    task->ucode_boot_size = (u8 *) rspbootTextEnd - (u8 *) rspbootTextStart;
+    task->ucode_boot_size = (u8 *) rspbootTextEnd  - (u8 *) rspbootTextStart;
+#if 1
+    task->ucode = n_aspMainTextStart;
+    task->ucode_size = (n_aspMainTextEnd  - n_aspMainTextStart) * sizeof(u64);
+    task->ucode_data = n_aspMainDataStart;
+    task->ucode_data_size = (n_aspMainDataEnd  - n_aspMainDataStart) * sizeof(u64);
+#else
     task->ucode = aspMainTextStart;
+    task->ucode_size = (aspMainTextEnd  - aspMainTextStart) * sizeof(u64);
     task->ucode_data = aspMainDataStart;
-    task->ucode_size = 0x800; // (this size is ignored)
-    task->ucode_data_size = (aspMainDataEnd - aspMainDataStart) * sizeof(u64);
+    task->ucode_data_size = (aspMainDataEnd  - aspMainDataStart) * sizeof(u64);
+#endif
     task->dram_stack = NULL;
     task->dram_stack_size = 0;
     task->output_buff = NULL;

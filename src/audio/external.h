@@ -2,6 +2,7 @@
 #define AUDIO_EXTERNAL_H
 
 #include <PR/ultratypes.h>
+#include <PR/n_libaudio.h>
 
 #include "types.h"
 
