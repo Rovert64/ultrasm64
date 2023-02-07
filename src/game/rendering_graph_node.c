@@ -307,10 +307,14 @@ void geo_process_switch(struct GraphNodeSwitchCase *node) {
 /**
  * Process a camera node.
  */
-void geo_process_camera(struct GraphNodeCamera *node) {
+void geo_process_camera(struct GraphNodeCamera *node, f32 split_offset) {
     Mat4 cameraTransform;
     Mtx *rollMtx = alloc_display_list(sizeof(*rollMtx));
     Mtx *mtx = alloc_display_list(sizeof(*mtx));
+
+    f32 unused_dist;
+    s16 unused_pitch;
+    s16 yaw;
 
     if (node->fnNode.func != NULL) {
         node->fnNode.func(GEO_CONTEXT_RENDER, &node->fnNode.node, gMatStack[gMatStackIndex]);
@@ -318,6 +322,11 @@ void geo_process_camera(struct GraphNodeCamera *node) {
     mtxf_rotate_xy(rollMtx, node->rollScreen);
 
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(rollMtx), G_MTX_PROJECTION | G_MTX_MUL | G_MTX_NOPUSH);
+
+    vec3f_get_dist_and_angle(&node->pos,&node->focus,&unused_dist,&unused_pitch,&yaw);
+
+    node->pos[0] += sins(yaw+0x4000)*split_offset;
+    node->pos[2] += coss(yaw+0x4000)*split_offset;
 
     mtxf_lookat(cameraTransform, node->pos, node->focus, node->roll);
     mtxf_mul(gMatStack[gMatStackIndex + 1], cameraTransform, gMatStack[gMatStackIndex]);
@@ -979,7 +988,7 @@ void geo_process_node_and_siblings(struct GraphNode *firstNode) {
                         geo_process_switch((struct GraphNodeSwitchCase *) curGraphNode);
                         break;
                     case GRAPH_NODE_TYPE_CAMERA:
-                        geo_process_camera((struct GraphNodeCamera *) curGraphNode);
+                        geo_process_camera((struct GraphNodeCamera *) curGraphNode, gSplitOffset);
                         break;
                     case GRAPH_NODE_TYPE_TRANSLATION_ROTATION:
                         geo_process_translation_rotation(
@@ -1016,7 +1025,9 @@ void geo_process_node_and_siblings(struct GraphNode *firstNode) {
                         geo_process_generated_list((struct GraphNodeGenerated *) curGraphNode);
                         break;
                     case GRAPH_NODE_TYPE_BACKGROUND:
-                        geo_process_background((struct GraphNodeBackground *) curGraphNode);
+                        if (gSplitPass == 0) {
+                            geo_process_background((struct GraphNodeBackground *) curGraphNode);
+                            }
                         break;
                     case GRAPH_NODE_TYPE_HELD_OBJ:
                         geo_process_held_object((struct GraphNodeHeldObject *) curGraphNode);
@@ -1053,6 +1064,8 @@ void geo_process_root(struct GraphNodeRoot *node, Vp *b, Vp *c, s32 clearColor) 
         gCurrAnimType = 0;
         vec3s_set(viewport->vp.vtrans, node->x * 4, node->y * 4, 511);
         vec3s_set(viewport->vp.vscale, node->width * 4, node->height * 4, 511);
+
+        /*
         if (b != NULL) {
             clear_framebuffer(clearColor);
             make_viewport_clip_rect(b);
@@ -1063,6 +1076,7 @@ void geo_process_root(struct GraphNodeRoot *node, Vp *b, Vp *c, s32 clearColor) 
             clear_framebuffer(clearColor);
             make_viewport_clip_rect(c);
         }
+        */
 
         mtxf_identity(gMatStack[gMatStackIndex]);
         mtxf_to_mtx(initialMatrix, gMatStack[gMatStackIndex]);

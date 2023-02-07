@@ -1828,7 +1828,7 @@ void print_main_menu_strings(void) {
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
 #ifndef VERSION_EU
-    print_hud_lut_string(HUD_LUT_DIFF, SELECT_FILE_X, 35, textSelectFile);
+    //
 #endif
     // Print file star counts
     print_save_file_star_count(SAVE_FILE_A, SAVEFILE_X1, 78);
@@ -1839,6 +1839,11 @@ void print_main_menu_strings(void) {
 #ifndef VERSION_EU
     // Print menu names
     gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
+    gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, sTextBaseAlpha);
+    print_generic_string(SELECT_FILE_X-40, 179, textSelectFile);
+    gDPSetEnvColor(gDisplayListHead++, 255, 120, 120, sTextBaseAlpha);
+    print_generic_string(SELECT_FILE_X-41, 180, textSelectFile);
+
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
     print_generic_string(SCORE_X, 39, textScore);
     print_generic_string(COPY_X, 39, textCopy);

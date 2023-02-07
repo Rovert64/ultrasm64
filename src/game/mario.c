@@ -1698,6 +1698,30 @@ void func_sh_8025574C(void) {
  */
 s32 execute_mario_action(UNUSED struct Object *o) {
     s32 inLoop = TRUE;
+    f32 change_speed = 1.0f;
+
+    //split controls
+    if (gPlayer1Controller->buttonDown & L_TRIG) {
+        change_speed = 3.0f;
+    }
+
+    if (gPlayer1Controller->buttonDown & L_JPAD) {
+        print_text_fmt_int(24, 190, "%d", (u16)(gSplitOffsetC));
+        gSplitOffsetC -= change_speed;
+        if (gSplitOffsetC < 0.0f) {
+            gSplitOffsetC = 0.0f;
+        }
+    }
+
+    if (gPlayer1Controller->buttonDown & R_JPAD) {
+        print_text_fmt_int(24, 190, "%d", (u16)(gSplitOffsetC));
+        gSplitOffsetC += change_speed;
+        /*
+        if (gSplitOffsetC < 0.0f) {
+            gSplitOffsetC = 0.0f;
+        }
+        */
+    }
 
     if (gMarioState->action) {
         gMarioState->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;

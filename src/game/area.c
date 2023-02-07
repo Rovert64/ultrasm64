@@ -360,9 +360,22 @@ void play_transition_after_delay(s16 transType, s16 time, u8 red, u8 green, u8 b
     play_transition(transType, time, red, green, blue);
 }
 
+f32 gSplitOffsetC = 0.0f;
+f32 gSplitOffset = 0.0f;
+u8 gSplitPass = 0;
+
 void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
+
+        gSplitPass = 0;
+        gSplitOffset = -gSplitOffsetC;
         geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);
+
+        if (gSplitOffsetC > 0.0f) {
+            gSplitPass = 1;
+            gSplitOffset = gSplitOffsetC;
+            geo_process_root(gCurrentArea->unk04, NULL, NULL, gFBSetColor);
+            }
 
         gSPViewport(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(&D_8032CF00));
 

@@ -131,7 +131,7 @@
  */
 // Main Screens
 #define TEXT_MARIO _("MARIO") // View Score Menu
-#define TEXT_SELECT_FILE _("SELECT FILE")
+#define TEXT_SELECT_FILE _("SPLIT-EYE SM64 BY ROVERT")
 #define TEXT_CHECK_FILE _("CHECK FILE")
 #define TEXT_COPY_FILE _("COPY FILE")
 #define TEXT_ERASE_FILE _("ERASE FILE")
